@@ -59,6 +59,25 @@
     background-color: #00bc77;
     color: #fff;
   }
+
+  h1 {
+    margin-bottom: 0;
+  }
+
+  .welcome-title {
+    font-size: 2rem;
+    font-weight: bold;
+    margin-bottom: 12px;
+  }
+
+  .welcome-title-edit {
+    margin-bottom: 12px;
+  }
+
+  .btn-save {
+    margin-right: 12px;
+  }
+
   
   @media (min-width: 720px) {
     .account {

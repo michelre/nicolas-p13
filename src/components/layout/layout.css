@@ -45,3 +45,11 @@
     margin: 0;
     padding: 0;
   }
+
+  .signout-btn {
+      font-family: Avenir, Helvetica, Arial, sans-serif;
+      border: none; 
+      background: transparent;
+      color: #2c3e50;
+      cursor: pointer;
+  }
