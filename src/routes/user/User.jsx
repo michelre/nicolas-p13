@@ -1,33 +1,42 @@
 import { useEffect, useState } from 'react'
 import './user.css'
-import { getUser, updateUser } from '../../api'
 import { useDispatch, useSelector } from 'react-redux'
-import { setUser } from '../../reducers'
+import { getUserAction, updateUserAction } from '../../actions'
+import { useNavigate } from 'react-router'
 
-const User = () => {
+const User = () => {    
+    
+    const navigate = useNavigate()
+    const userFirstName = useSelector((state) => state.user.firstName)
+    const userLastName = useSelector((state) => state.user.lastName)
+    const userToken = useSelector((state) => state.user.token)
 
     const [firstName, setFirstName] = useState('')
     const [lastName, setLastName] = useState('')
     const [edit, setEdit] = useState(false)
-    
-    const userFirstName = useSelector((state) => state.user.firstName)
-    const userLastName = useSelector((state) => state.user.lastName)
     const dispatch = useDispatch()
 
     useEffect(() => {
-      getUser(localStorage.getItem('token')).then((res) => {
-        dispatch(setUser(res.body))
-        setFirstName(res.body.firstName)
-        setLastName(res.body.lastName)
-      })
+      if(userFirstName)
+        setFirstName(userFirstName)
+
+      if(userLastName)
+        setLastName(userLastName)
+    }, [userFirstName, userLastName])
+
+    useEffect(() => {
+      if(!userToken){
+        navigate('/signin')
+      }      
+    }, [userToken])
+
+    useEffect(() => {
+      dispatch(getUserAction({token: userToken}))             
     }, [])
 
     const onSave = async (e) => {
       e.preventDefault()
-      await updateUser({
-        firstName, lastName
-      }, localStorage.getItem('token'))
-      dispatch(setUser({firstName, lastName}))
+      dispatch(updateUserAction({firstName, lastName, token: userToken}))
       setEdit(false)
     }
 
@@ -36,10 +45,6 @@ const User = () => {
       setLastName(userLastName)
       setEdit(false)
     }
-
-  
-
-
 
     return <main className="main bg-dark">
     <div className="header">

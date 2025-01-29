@@ -1,25 +1,33 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import './signin.css'
-import { signin } from '../../api';
 import { useNavigate } from 'react-router';
-import { useDispatch } from 'react-redux';
-import { setToken } from '../../reducers';
+import { useDispatch, useSelector } from 'react-redux';
+import { signinAction } from '../../actions';
 
 
 const Signin = () => {
 
+    const userToken = useSelector((state) => state.user.token)
+
     const [username, setUsername] = useState('')
     const [password, setPassword] = useState('')
+    const [remember, setRemember] = useState(false)
     const navigate = useNavigate()
     const dispatch = useDispatch()
 
+    useEffect(() => {
+      if(userToken){
+        localStorage.removeItem('token')
+        if(remember){
+          localStorage.setItem('token', userToken)
+        }
+        navigate('/user')
+      }      
+    }, [userToken])
+
     const onSignin = async (e) => {
       e.preventDefault();
-      const data = await signin(username, password)
-      localStorage.setItem('token', data.body.token)
-      dispatch(setToken({token: data.body.token}))
-      navigate('/user')
-
+      dispatch(signinAction({email: username, password}))         
     }
 
     return <main className="main bg-dark">
@@ -36,7 +44,7 @@ const Signin = () => {
           ><input type="password" id="password" onChange={e => setPassword(e.target.value)}/>
         </div>
         <div className="input-remember">
-          <input type="checkbox" id="remember-me" /><label htmlFor="remember-me"
+          <input type="checkbox" id="remember-me" value={remember} onChange={e => setRemember(e.target.checked)} /><label htmlFor="remember-me"
             >Remember me</label>
         </div>
         <button className="sign-in-button" onClick={onSignin}>
