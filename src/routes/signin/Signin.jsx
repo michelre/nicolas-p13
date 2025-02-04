@@ -8,6 +8,8 @@ import { signinAction } from '../../actions';
 const Signin = () => {
 
     const userToken = useSelector((state) => state.user.token)
+    const userError = useSelector((state) => state.user.error)
+    const userLoading = useSelector((state) => state.user.loading)
 
     const [username, setUsername] = useState('')
     const [password, setPassword] = useState('')
@@ -47,7 +49,8 @@ const Signin = () => {
           <input type="checkbox" id="remember-me" value={remember} onChange={e => setRemember(e.target.checked)} /><label htmlFor="remember-me"
             >Remember me</label>
         </div>
-        <button className="sign-in-button" onClick={onSignin}>
+        {(userError) ? <p className="error">{userError}</p> : ''}
+        <button className="sign-in-button" onClick={onSignin} disabled={userLoading}>
           Sign In
         </button>
       </form>

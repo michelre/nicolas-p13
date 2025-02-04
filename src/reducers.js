@@ -6,6 +6,8 @@ const initialState = {
   firstName: '',
   lastName: '',
   token: localStorage.getItem('token'),
+  error: null,
+  loading: false
 }
 
 export const userSlice = createSlice({
@@ -19,6 +21,15 @@ export const userSlice = createSlice({
   extraReducers: (builder) => {
     builder.addCase(signinAction.fulfilled, (state, action) => {
       state.token = action.payload.token
+      state.loading = false
+    }),
+    builder.addCase(signinAction.pending, (state) => {
+      state.error = null
+      state.loading = true
+    }),
+    builder.addCase(signinAction.rejected, (state, action) => {
+      state.error = action.error.message
+      state.loading = false
     }),
     builder.addCase(getUserAction.fulfilled, (state, action) => {
       state.firstName = action.payload.firstName
